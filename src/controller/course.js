@@ -41,3 +41,9 @@ exports.createCourse = async(req, res) => {
     return res.status(400).json({message: "Error saving the course", error: error})
   }
 };
+
+exports.getCourses = async (req,res) => {
+  const courses = await Course.find({});
+
+  return res.json({courses});
+}
