@@ -47,3 +47,20 @@ exports.getCourses = async (req,res) => {
 
   return res.json({courses});
 }
+
+exports.getSpecificCourse = async(req, res) => {
+  try {
+    const courseId = req.params.id;
+  
+    const foundCourse = await Course.findById(courseId);
+  
+    if(foundCourse){
+      return res.json(foundCourse);
+    }else{
+      return res.status(404).json({message: "The course doesn't exists"})
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(404).json({message: 'Something went wrong', error});
+  }
+}
