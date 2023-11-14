@@ -8,13 +8,21 @@ exports.signup = async (req, res) => {
     return res.status(400).json({message: 'User already exists'});
   }else {
     try {
-      const {firstName, lastName, email, password} = req.body;
+      const {firstName, lastName, email, password, adminPassword, role} = req.body;
       const newUser = new User({
         firstName,
         lastName,
         email,
         password
       });
+
+      if(role){
+        if(adminPassword == process.env.ADMIN_PASSWORD){
+          newUser.role = role;
+        }else {
+          return res.status(400).json({message: "Wrong admin password"})
+        }
+      }
 
       const savedUser = await newUser.save();
 
