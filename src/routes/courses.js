@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 
 router.post('/admin/courses/create', requireSignin, adminMiddleware,upload.single('thumbnail'), createCourse);
-router.get('/courses/:id/enroll/:userId', requireSignin, userMiddleware, enroll);
+router.patch('/courses/:id/enroll/:userId', requireSignin, userMiddleware, enroll);
 router.get('/courses/:id', requireSignin, getSpecificCourse);
 router.get('/courses', getCourses);
 
