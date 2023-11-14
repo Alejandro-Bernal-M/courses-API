@@ -37,3 +37,33 @@ exports.signup = async (req, res) => {
     }
   }
 }
+
+exports.signin = async (req, res) => {
+  try {
+    const foundUser = await User.findOne({email: req.body.email});
+    if(!foundUser) return res.status(400).json({message: "Incorrect email or password"});
+
+    if(foundUser.authenticate(req.body.password)){
+      const token = jwt.sign({_id: foundUser._id, role: foundUser.role}, process.env.JWT_SECRET, {expiresIn: '2h'});
+      const {_id, firstName, lastName, email, role, fullName } = foundUser;
+
+      return res.status(200).json({
+        token,
+        user: {
+          _id,
+          firstName,
+          lastName,
+          email,
+          role,
+          fullName
+        }
+      })
+    }else {
+      return res.status(400).json({message: "Invalid email or password"});
+    }
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({message: "Something went wrong"});
+  }
+}
