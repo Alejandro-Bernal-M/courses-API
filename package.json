@@ -1,0 +1,28 @@
+{
+  "name": "courses-api",
+  "version": "1.0.0",
+  "description": "API created for the Alemeno challenge to show and interact with online courses",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alejandro-Bernal-M/courses-API.git"
+  },
+  "keywords": [],
+  "author": "Alejandro Bernal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Alejandro-Bernal-M/courses-API/issues"
+  },
+  "homepage": "https://github.com/Alejandro-Bernal-M/courses-API#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.0.1"
+  }
+}
