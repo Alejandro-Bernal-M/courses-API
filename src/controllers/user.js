@@ -1,5 +1,5 @@
 const Course = require('../models/course');
-const User = require('../models/User');
+const User = require('../models/user');
 
 function getDueDate(duration, enrolledAt){
   const durationParts = duration.split(' '); // Split the duration into parts, e.g., ['8', 'weeks']
