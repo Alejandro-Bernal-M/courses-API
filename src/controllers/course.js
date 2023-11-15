@@ -44,9 +44,19 @@ exports.createCourse = async(req, res) => {
 };
 
 exports.getCourses = async (req,res) => {
-  const courses = await Course.find({});
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 10; // Default to 10 courses per page
 
-  return res.json({courses});
+    const courses = await Course.find()
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+
+    return res.json({ courses, currentPage: page, coursesPerPage: perPage });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 }
 
 exports.getSpecificCourse = async(req, res) => {
