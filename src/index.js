@@ -6,6 +6,7 @@ const path = require('path');
 //routes files
 const authRoutes = require('./routes/auth');
 const courseRoutes = require('./routes/courses');
+const userRoutes = require('./routes/user');
 
 // env
 env.config();
@@ -19,6 +20,7 @@ app.use('/public',express.static(path.join(__dirname, 'uploads')));
 //routes middlewares
 app.use('/api' , authRoutes);
 app.use('/api/', courseRoutes);
+app.use('/api/', userRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port = ${process.env.PORT}`)
