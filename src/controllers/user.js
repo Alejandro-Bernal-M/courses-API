@@ -81,3 +81,41 @@ exports.completeCourse = async(req, res) => {
     return res.status(400).json({message: "Something went wrong", error});
   }
 };
+
+exports.getCourseDetails = async(req, res) => {
+  const userId = req.params.userId;
+  const courseId = req.params.courseId;
+  const foundUser = await User.findById(userId);
+  if(!foundUser){
+    return res.status(400).json({message: "User not found"});
+  }
+  if(foundUser.enrolledCourses.length == 0){
+    return res.status(400).json({message: "User not enrolled in any course"});
+  }
+  if(!foundUser.enrolledCourses.some(course => course.course == courseId)){
+    return res.status(400).json({message: "User not enrolled in this course"});
+  }
+  const foundCourse = await Course.findById(courseId);
+  if(!foundCourse){
+    return res.status(400).json({message: "Course not found"});
+  }
+  const enrolledCourse = foundUser.enrolledCourses.find(course => course.course == courseId);
+  const course = {
+    _id: foundCourse._id,
+    name: foundCourse.name,
+    instructor: foundCourse.instructor,
+    thumbnail: foundCourse.thumbnail,
+    description: foundCourse.description,
+    enrolledAt: enrolledCourse.enrolledAt,
+    completed: enrolledCourse.completed,
+    completedAt: enrolledCourse.completedAt,
+    dueDate: getDueDate(foundCourse.duration, enrolledCourse.enrolledAt),
+    progress: getProgress(enrolledCourse.enrolledAt, foundCourse.duration, enrolledCourse.completed),
+    schedule: foundCourse.schedule,
+    location: foundCourse.location,
+    prerequisites: foundCourse.prerequisites,
+    syllabus: foundCourse.syllabus
+  }
+
+  return res.json({course});
+};
