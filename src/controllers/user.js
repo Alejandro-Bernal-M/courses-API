@@ -20,7 +20,10 @@ function getDueDate(duration, enrolledAt){
   }
 }
 
-function getProgress(enrolledAt, duration) {
+function getProgress(enrolledAt, duration, completed) {
+  if (completed) {
+    return 100;
+  }
   const dueDate = getDueDate(duration, enrolledAt);
   const now = new Date();
   const totalDuration = dueDate.getTime() - enrolledAt.getTime();
