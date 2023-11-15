@@ -56,7 +56,19 @@ exports.getSpecificCourse = async(req, res) => {
     const foundCourse = await Course.findById(courseId);
     
     if(foundCourse){
-      return res.json(foundCourse);
+      const filteredCourse = {
+        _id: foundCourse._id,
+        name: foundCourse.name,
+        instructor: foundCourse.instructor,
+        thumbnail: foundCourse.thumbnail,
+        description: foundCourse.description,
+        enrollmentStatus: foundCourse.enrollmentStatus,
+        duration: foundCourse.duration,
+        schedule: foundCourse.schedule,
+        location: foundCourse.location,
+        prerequisites: foundCourse.prerequisites,
+      }
+      return res.json(filteredCourse);
     }else{
       return res.status(404).json({message: "The course doesn't exists"})
     }
