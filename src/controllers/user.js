@@ -46,8 +46,38 @@ exports.getEnrolled = async(req, res) => {
       completed: course.completed,
       completedAt: course.completedAt,
       dueDate: getDueDate(course.course.duration, course.enrolledAt),
-      progress: getProgress(course.enrolledAt, course.course.duration)
+      progress: getProgress(course.enrolledAt, course.course.duration, course.completed)
     }
   });
   return res.json({courses});
+};
+
+exports.completeCourse = async(req, res) => {
+  const userId = req.params.userId;
+  const courseId = req.params.courseId;
+  const foundUser = await User.findById(userId);
+  if(!foundUser){
+    return res.status(400).json({message: "User not found"});
+  }
+
+  if(foundUser.enrolledCourses.length == 0){
+    return res.status(400).json({message: "User not enrolled in any course"});
+  }
+  if(!foundUser.enrolledCourses.some(course => course.course == courseId)){
+    return res.status(400).json({message: "User not enrolled in this course"});
+  }
+
+  foundUser.enrolledCourses.forEach(course => {
+    if (course.course == courseId) {
+      course.completed = true;
+      course.completedAt = new Date();
+    }
+  });
+  try {
+    await foundUser.save();
+    return res.json({message: "Course completed successfully"});
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({message: "Something went wrong", error});
+  }
 };
