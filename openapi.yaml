@@ -1,0 +1,531 @@
+openapi: 3.0.0
+info:
+  title: "Alemeno Courses API"
+  version: "1.0.0"
+paths:
+  /api/courses:
+    get:
+      summary: Get a list of courses
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                filteredCourses:
+                  - _id: "6553db46c0f4d9de10e8cf4b"
+                    name: "Introduction to React Native"
+                    instructor: "Jhon Doe"
+                    thumbnail: "z53_Cgk0s-banner 2.png"
+                    description: "Learn the basics of React Native development and build your first mobile app."
+                    enrollmentStatus: "Open"
+                    duration: "8 weeks"
+                    schedule: "Tuesdays and Thursdays, 6:00 PM - 8:00 PM"
+                    location: "Online"
+                    prerequisites:
+                      - "Basic JavaScript knowledge "
+                      - "Familiarity with React"
+                currentPage: 1
+                coursesPerPage: 10
+
+  /courses/{id}:
+    get:
+      summary: Get a specific course by ID
+      description: Retrieve details for a specific course using its unique identifier.
+      parameters:
+        - in: path
+          name: id
+          description: The ID of the course to retrieve
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                _id: "1234567890"
+                name: "Introduction to API Design"
+                instructor: "John Doe"
+                thumbnail: "https://example.com/thumbnail.jpg"
+                description: "Learn the fundamentals of API design."
+                enrollmentStatus: "Open"
+                duration: "8 weeks"
+                schedule: "Tuesdays and Thursdays, 6:00 PM - 8:00 PM"
+                location: "Online"
+                prerequisites:
+                  - "Basic JavaScript knowledge"
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              example:
+                message: "The course doesn't exist"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Something went wrong"
+                error: "Internal Server Error"
+
+  /api/courses/search:
+    get:
+      summary: Search for courses based on specific criteria
+      parameters:
+        - in: query
+          name: q
+          description: Search query for course name, instructor, or keywords
+          schema:
+            type: string
+        - in: query
+          name: enrollmentStatus
+          description: Optional enrollment status filter (e.g., 'Open', 'Closed', 'In Progress')
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                - _id: "6553db46c0f4d9de10e8cf4b"
+                  name: "Introduction to React Native"
+                  instructor: "Jhon Doe"
+                  thumbnail: "z53_Cgk0s-banner 2.png"
+                  description: "Learn the basics of React Native development and build your first mobile app."
+                  enrollmentStatus: "Open"
+                  duration: "8 weeks"
+                  schedule: "Tuesdays and Thursdays, 6:00 PM - 8:00 PM"
+                  location: "Online"
+                  prerequisites:
+                    - "Basic JavaScript knowledge "
+                    - "Familiarity with React"
+                - _id: "6553db46c0f4d9de10e8cf4c"
+                  name: "Advanced JavaScript"
+                  instructor: "Jane Doe"
+                  thumbnail: "xyz123-banner.png"
+                  description: "Deepen your JavaScript knowledge with advanced concepts and techniques."
+                  enrollmentStatus: "Closed"
+                  duration: "10 weeks"
+                  schedule: "Mondays and Wednesdays, 7:00 PM - 9:00 PM"
+                  location: "Onsite"
+                  prerequisites:
+                    - "Intermediate JavaScript skills"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Internal server error"
+                error: "Internal Server Error"
+  /api/courses/{id}/enroll/{userId}:
+    patch:
+      summary: Enroll a user in a course
+      parameters:
+        - in: path
+          name: id
+          description: The ID of the course to enroll the user in
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: userId
+          description: The ID of the user to enroll in the course
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful enrollment
+          content:
+            application/json:
+              example:
+                message: "Enrollment successful"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              example:
+                message: "User doesn't exist"
+        '400':
+          description: User already enrolled or other error
+          content:
+            application/json:
+              example:
+                message: "User already enrolled"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Something went wrong"
+                error: "Internal Server Error"
+  /admin/courses/create:
+    post:
+      summary: Create a new course (Admin)
+      parameters:
+        - in: header
+          name: Authorization
+          description: JWT token for authentication
+          required: true
+          schema:
+            type: string
+        - in: formData
+          name: thumbnail
+          description: Course thumbnail image (upload)
+          required: true
+          type: file
+        - in: formData
+          name: name
+          description: Course name
+          required: true
+          type: string
+        - in: formData
+          name: instructor
+          description: Instructor's name
+          required: true
+          type: string
+        - in: formData
+          name: description
+          description: Course description
+          required: true
+          type: string
+        - in: formData
+          name: enrollmentStatus
+          description: Enrollment status (e.g., 'Open', 'Closed', 'In Progress')
+          required: true
+          type: string
+        - in: formData
+          name: schedule
+          description: Course schedule
+          required: true
+          type: string
+        - in: formData
+          name: duration
+          description: Course duration
+          required: true
+          type: string
+        - in: formData
+          name: location
+          description: Course location
+          required: true
+          type: string
+        - in: formData
+          name: prerequisites
+          description: Course prerequisites (array)
+          required: true
+          type: array
+          items:
+            type: string
+        - in: formData
+          name: syllabus
+          description: Course syllabus (array of objects)
+          required: true
+          type: array
+          items:
+            type: object
+            properties:
+              week:
+                type: number
+              topic:
+                type: string
+              content:
+                type: string
+        - in: formData
+          name: students
+          description: Array of student IDs enrolled in the course
+          required: true
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Course created successfully
+          content:
+            application/json:
+              example:
+                _id: "6553db46c0f4d9de10e8cf4b"
+                name: "Introduction to React Native"
+                instructor: "Jhon Doe"
+                thumbnail: "z53_Cgk0s-banner 2.png"
+                description: "Learn the basics of React Native development and build your first mobile app."
+                enrollmentStatus: "Open"
+                duration: "8 weeks"
+                schedule: "Tuesdays and Thursdays, 6:00 PM - 8:00 PM"
+                location: "Online"
+                prerequisites:
+                  - "Basic JavaScript knowledge "
+                  - "Familiarity with React"
+                syllabus:
+                  - week: 1
+                    topic: "Introduction to React Native"
+                    content: "Overview of React Native, setting up your development environment"
+                students: []
+        '400':
+          description: Error saving the course
+          content:
+            application/json:
+              example:
+                message: "Error saving the course"
+                error: "Internal Server Error"
+        '401':
+          description: Unauthorized (JWT token not provided)
+          content:
+            application/json:
+              example:
+                message: "Authorization required"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Internal server error"
+                error: "Internal Server Error"
+  /user/getEnrolled:
+    get:
+      summary: Get enrolled courses for a user
+      parameters:
+        - in: header
+          name: Authorization
+          description: JWT token for authentication
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                courses:
+                  - _id: "6553db46c0f4d9de10e8cf4b"
+                    name: "Introduction to React Native"
+                    instructor: "Jhon Doe"
+                    thumbnail: "z53_Cgk0s-banner 2.png"
+                    description: "Learn the basics of React Native development and build your first mobile app."
+                    enrolledAt: "2023-01-01T12:00:00Z"
+                    completed: false
+                    completedAt: null
+                    dueDate: "2023-02-26T12:00:00Z"
+                    progress: 45.67
+        '400':
+          description: Access denied
+          content:
+            application/json:
+              example:
+                message: "Access denied"
+        '401':
+          description: Authorization required
+          content:
+            application/json:
+              example:
+                message: "Authorization required"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Internal server error"
+                error: "Internal Server Error"
+  /user/{userId}/courses/{courseId}/mark-as-completed:
+    patch:
+      summary: Mark a course as completed for a user
+      parameters:
+        - in: path
+          name: userId
+          description: The ID of the user
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: courseId
+          description: The ID of the course
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: JWT token for authentication
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Course completed successfully
+          content:
+            application/json:
+              example:
+                message: "Course completed successfully"
+        '400':
+          description: User not found, not enrolled, or other error
+          content:
+            application/json:
+              example:
+                message: "User not found"
+        '401':
+          description: Authorization required
+          content:
+            application/json:
+              example:
+                message: "Authorization required"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Something went wrong"
+                error: "Internal Server Error"
+  /user/{userId}/courses/{courseId}:
+    get:
+      summary: Get details of a specific course for a user
+      parameters:
+        - in: path
+          name: userId
+          description: The ID of the user
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: courseId
+          description: The ID of the course
+          required: true
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: JWT token for authentication
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              example:
+                course:
+                  _id: "6553db46c0f4d9de10e8cf4b"
+                  name: "Introduction to React Native"
+                  instructor: "Jhon Doe"
+                  thumbnail: "z53_Cgk0s-banner 2.png"
+                  description: "Learn the basics of React Native development and build your first mobile app."
+                  enrolledAt: "2023-01-01T12:00:00Z"
+                  completed: false
+                  completedAt: null
+                  dueDate: "2023-02-26T12:00:00Z"
+                  progress: 45.67
+                  schedule: "Tuesdays and Thursdays, 6:00 PM - 8:00 PM"
+                  location: "Online"
+                  prerequisites:
+                    - "Basic JavaScript knowledge "
+                    - "Familiarity with React"
+                  syllabus:
+                    - week: 1
+                      topic: "Introduction to React Native"
+                      content: "Overview of React Native, setting up your development environment"
+                    - week: 2
+                      topic: "React Native Components"
+                      content: "Learn about React Native components and how to use them"
+        '400':
+          description: User, course not found, not enrolled, or other error
+          content:
+            application/json:
+              example:
+                message: "User not found"
+        '401':
+          description: Authorization required
+          content:
+            application/json:
+              example:
+                message: "Authorization required"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Something went wrong"
+                error: "Internal Server Error"
+  /signup:
+    post:
+      summary: User signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              firstName: "John"
+              lastName: "Doe"
+              email: "john.doe@example.com"
+              password: "securePassword"
+              adminPassword: "adminSecret" # Only required if assigning an admin role
+              role: "admin" # Optional
+      responses:
+        '200':
+          description: User signup successful
+          content:
+            application/json:
+              example:
+                savedUser:
+                  _id: "6553db46c0f4d9de10e8cf4b"
+                  firstName: "John"
+                  lastName: "Doe"
+                  email: "john.doe@example.com"
+                  role: "admin"
+        '400':
+          description: User already exists, wrong admin password, or other error
+          content:
+            application/json:
+              example:
+                message: "User already exists"
+        '401':
+          description: Unauthorized (wrong admin password)
+          content:
+            application/json:
+              example:
+                message: "Wrong admin password"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Something went wrong"
+                error: "Internal Server Error"
+  /signin:
+    post:
+      summary: User signin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              email: "john.doe@example.com"
+              password: "securePassword"
+      responses:
+        '200':
+          description: Signin successful
+          content:
+            application/json:
+              example:
+                token: "jwtTokenHere"
+                user:
+                  _id: "6553db46c0f4d9de10e8cf4b"
+                  firstName: "John"
+                  lastName: "Doe"
+                  email: "john.doe@example.com"
+                  role: "admin"
+                  fullName: "John Doe"
+        '400':
+          description: Incorrect email or password, invalid email or password, or other error
+          content:
+            application/json:
+              example:
+                message: "Incorrect email or password"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                message: "Something went wrong"
+                error: "Internal Server Error"

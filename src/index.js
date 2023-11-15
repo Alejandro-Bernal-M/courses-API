@@ -7,6 +7,21 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const courseRoutes = require('./routes/courses');
 const userRoutes = require('./routes/user');
+// Redoc
+const fs = require('fs');
+
+
+app.use('/docs', (req, res) => {
+  fs.readFile('redoc-static.html', 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send('Error reading HTML file');
+    }
+
+    // Send the HTML content as the response
+    res.send(data);
+  });
+} );
 
 // env
 env.config();
