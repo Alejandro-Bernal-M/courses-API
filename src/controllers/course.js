@@ -1,5 +1,5 @@
 const Course = require('../models/course');
-const User = require('../models/User');
+const User = require('../models/user');
 
 exports.createCourse = async(req, res) => {
   const {
@@ -52,7 +52,22 @@ exports.getCourses = async (req,res) => {
       .skip((page - 1) * perPage)
       .limit(perPage);
 
-    return res.json({ courses, currentPage: page, coursesPerPage: perPage });
+    const filteredCourses = courses.map(course => {
+      return {
+        _id: course._id,
+        name: course.name,
+        instructor: course.instructor,
+        thumbnail: course.thumbnail,
+        description: course.description,
+        enrollmentStatus: course.enrollmentStatus,
+        duration: course.duration,
+        schedule: course.schedule,
+        location: course.location,
+        prerequisites: course.prerequisites,
+      };
+    });
+
+    return res.json({ filteredCourses, currentPage: page, coursesPerPage: perPage });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Internal server error' });
@@ -106,10 +121,10 @@ exports.enroll = async(req,res) => {
       foundCourse.students.push(userId)
       try {
         foundUser.enrolledCourses.push({course: courseId});
-        const updatedUser = await foundUser.save();
-        const updatedCourse = await foundCourse.save();
+        await foundUser.save();
+        await foundCourse.save();
         console.log(foundUser)
-        return res.json({ message: "Enrollment successful", updatedCourse, updatedUser });
+        return res.json({ message: "Enrollment successful" });
       } catch (error) {
         console.log(error)
         return res.status(400).json({message: "Error updating the course"});
