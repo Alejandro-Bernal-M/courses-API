@@ -73,7 +73,6 @@ exports.enroll = async(req,res) => {
     
     const foundCourse = await Course.findById(courseId);
     const foundUser = await User.findById(userId);
-    console.log(foundUser)
 
     if(!foundUser){
       return res.status(404).json({message: "user doesn't exists"});
@@ -84,8 +83,11 @@ exports.enroll = async(req,res) => {
     }else {
       foundCourse.students.push(userId)
       try {
+        foundUser.enrolledCourses.push({course: courseId});
+        const updatedUser = await foundUser.save();
         const updatedCourse = await foundCourse.save();
-        return res.json(updatedCourse);
+        console.log(foundUser)
+        return res.json({ message: "Enrollment successful", updatedCourse, updatedUser });
       } catch (error) {
         console.log(error)
         return res.status(400).json({message: "Error updating the course"});
