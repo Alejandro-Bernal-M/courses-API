@@ -30,7 +30,27 @@ const UserSchema = new mongoose.Schema({
   hashPassword:{
     type: String,
     required: true
-  }
+  },
+  enrolledCourses: [
+    {
+      course:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course',
+      },
+      enrolledAt: {
+        type: Date,
+        default: Date.now
+      },
+      completed: {
+        type: Boolean,
+        default: false
+      },
+      completedAt: {
+        type: Date,
+        default: null
+      }
+    }
+  ]
 }, {timestamps: true});
 
 UserSchema.virtual('password').set(function(password){
