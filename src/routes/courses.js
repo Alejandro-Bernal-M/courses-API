@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { requireSignin, adminMiddleware, userMiddleware } = require('../common-middlewares');
-const { createCourse, getCourses, getSpecificCourse, enroll } = require('../controllers/course');
+const { createCourse, getCourses, getSpecificCourse, enroll, searchCourses } = require('../controllers/course');
 const multer = require('multer');
 const shortid = require('shortid');
 const path = require('path');
@@ -19,6 +19,7 @@ const upload = multer({storage: storage});
 
 router.post('/admin/courses/create', requireSignin, adminMiddleware,upload.single('thumbnail'), createCourse);
 router.patch('/courses/:id/enroll/:userId', requireSignin, userMiddleware, enroll);
+router.get('/courses/search', searchCourses);
 router.get('/courses/:id', requireSignin, getSpecificCourse);
 router.get('/courses', getCourses);
 

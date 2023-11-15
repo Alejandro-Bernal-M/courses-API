@@ -121,3 +121,51 @@ exports.enroll = async(req,res) => {
     return res.status(400).json({message: "something went wrong", error});
   }
 }
+
+exports.searchCourses = async(req, res) => {
+  try {
+    const searchQuery = req.query.q || ''; // Get the search query from the request
+
+    const enrollmentStatus = req.query.enrollmentStatus || ''; // Optional enrollment status filter
+    const courseDuration = req.query.courseDuration || ''; // Optional course duration filter
+
+    // Construct the search filter based on provided query parameters
+    const searchFilter = {
+      $or: [
+        { name: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search for course name
+        { instructor: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search for instructor name
+        { keywords: { $regex: searchQuery, $options: 'i' } } // Case-insensitive search for keywords
+      ]
+    };
+
+    // Apply optional filters
+    if (enrollmentStatus) {
+      searchFilter.enrollmentStatus = enrollmentStatus;
+    }
+
+    if (courseDuration) {
+      searchFilter.duration = courseDuration;
+    }
+
+    const foundCourses = await Course.find(searchFilter);
+    const filteredCourses = foundCourses.map(course => {
+      return {
+        _id: course._id,
+        name: course.name,
+        instructor: course.instructor,
+        thumbnail: course.thumbnail,
+        description: course.description,
+        enrollmentStatus: course.enrollmentStatus,
+        duration: course.duration,
+        schedule: course.schedule,
+        location: course.location,
+        prerequisites: course.prerequisites,
+      };
+    });
+
+    return res.json(filteredCourses);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
