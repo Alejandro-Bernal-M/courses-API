@@ -27,7 +27,8 @@ exports.signup = async (req, res) => {
       const savedUser = await newUser.save();
 
       if(savedUser == newUser){
-        return res.json({savedUser});
+        const token = jwt.sign({_id: savedUser._id, role: savedUser.role}, process.env.JWT_SECRET, {expiresIn: '2h'});
+        return res.json({token, user:savedUser});
       }else {
         return res.status(400).json({message: 'Error saving the user'});
       }

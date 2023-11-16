@@ -467,7 +467,8 @@ paths:
           content:
             application/json:
               example:
-                savedUser:
+                token: "jwtTokenHere"
+                user:
                   _id: "6553db46c0f4d9de10e8cf4b"
                   firstName: "John"
                   lastName: "Doe"
