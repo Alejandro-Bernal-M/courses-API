@@ -175,81 +175,61 @@ paths:
   /api/admin/courses/create:
     post:
       summary: Create a new course (Admin)
-      parameters:
-        - in: header
-          name: Authorization
-          description: JWT token for authentication
-          required: true
-          schema:
-            type: string
-        - in: formData
-          name: thumbnail
-          description: Course thumbnail image (upload)
-          required: true
-          type: file
-        - in: formData
-          name: name
-          description: Course name
-          required: true
-          type: string
-        - in: formData
-          name: instructor
-          description: Instructor's name
-          required: true
-          type: string
-        - in: formData
-          name: description
-          description: Course description
-          required: true
-          type: string
-        - in: formData
-          name: enrollmentStatus
-          description: Enrollment status (e.g., 'Open', 'Closed', 'In Progress')
-          required: true
-          type: string
-        - in: formData
-          name: schedule
-          description: Course schedule
-          required: true
-          type: string
-        - in: formData
-          name: duration
-          description: Course duration
-          required: true
-          type: string
-        - in: formData
-          name: location
-          description: Course location
-          required: true
-          type: string
-        - in: formData
-          name: prerequisites
-          description: Course prerequisites (array)
-          required: true
-          type: array
-          items:
-            type: string
-        - in: formData
-          name: syllabus
-          description: Course syllabus (array of objects)
-          required: true
-          type: array
-          items:
-            type: object
-            properties:
-              week:
-                type: number
-              topic:
-                type: string
-              content:
-                type: string
-        - in: formData
-          name: students
-          description: Array of student IDs enrolled in the course
-          required: true
-          type: array
-          items:
-            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                thumbnail:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                instructor:
+                  type: string
+                description:
+                  type: string
+                enrollmentStatus:
+                  type: string
+                schedule:
+                  type: string
+                duration:
+                  type: string
+                location:
+                  type: string
+                prerequisites:
+                  type: array
+                  items:
+                    type: string
+                syllabus:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      week:
+                        type: number
+                      topic:
+                        type: string
+                      content:
+                        type: string
+            example:
+              thumbnail: binary data
+              name: "Introduction to React Native"
+              instructor: "Jhon Doe"
+              description: "Learn the basics of React Native development and build your first mobile app."
+              enrollmentStatus: "Open"
+              schedule: "Tuesdays and Thursdays, 6:00 PM - 8:00 PM"
+              duration: "8 weeks"
+              location: "Online"
+              prerequisites:
+                - "Basic JavaScript knowledge "
+                - "Familiarity with React"
+              syllabus:
+                - week: 1
+                  topic: "Introduction to React Native"
+                  content: "Overview of React Native, setting up your development environment"
       responses:
         '200':
           description: Course created successfully
@@ -293,6 +273,7 @@ paths:
               example:
                 message: "Internal server error"
                 error: "Internal Server Error"
+
   /api/user/getEnrolled:
     get:
       summary: Get enrolled courses for a user
@@ -464,6 +445,21 @@ paths:
         required: true
         content:
           application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                adminPassword:
+                  type: string
+                role:
+                  type: string
             example:
               firstName: "John"
               lastName: "Doe"
@@ -510,6 +506,13 @@ paths:
         required: true
         content:
           application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
             example:
               email: "john.doe@example.com"
               password: "securePassword"
