@@ -28,7 +28,7 @@ paths:
                 currentPage: 1
                 coursesPerPage: 10
 
-  /courses/{id}:
+  /api/courses/{id}:
     get:
       summary: Get a specific course by ID
       description: Retrieve details for a specific course using its unique identifier.
@@ -56,6 +56,10 @@ paths:
                 location: "Online"
                 prerequisites:
                   - "Basic JavaScript knowledge"
+                syllabus:
+                  - week: 1
+                    topic: "Introduction to React Native"
+                    content: "Overview of React Native, setting up your development environment"
         '404':
           description: Course not found
           content:
@@ -136,6 +140,12 @@ paths:
           required: true
           schema:
             type: string
+        - in: header
+          name: Authorization
+          description: JWT token for authentication
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Successful enrollment
@@ -162,7 +172,7 @@ paths:
               example:
                 message: "Something went wrong"
                 error: "Internal Server Error"
-  /admin/courses/create:
+  /api/admin/courses/create:
     post:
       summary: Create a new course (Admin)
       parameters:
@@ -283,7 +293,7 @@ paths:
               example:
                 message: "Internal server error"
                 error: "Internal Server Error"
-  /user/getEnrolled:
+  /api/user/getEnrolled:
     get:
       summary: Get enrolled courses for a user
       parameters:
@@ -329,7 +339,7 @@ paths:
               example:
                 message: "Internal server error"
                 error: "Internal Server Error"
-  /user/{userId}/courses/{courseId}/mark-as-completed:
+  /api/user/{userId}/courses/{courseId}/mark-as-completed:
     patch:
       summary: Mark a course as completed for a user
       parameters:
@@ -377,7 +387,7 @@ paths:
               example:
                 message: "Something went wrong"
                 error: "Internal Server Error"
-  /user/{userId}/courses/{courseId}:
+  /api/user/{userId}/courses/{courseId}:
     get:
       summary: Get details of a specific course for a user
       parameters:
@@ -447,7 +457,7 @@ paths:
               example:
                 message: "Something went wrong"
                 error: "Internal Server Error"
-  /signup:
+  /api/signup:
     post:
       summary: User signup
       requestBody:
@@ -493,7 +503,7 @@ paths:
               example:
                 message: "Something went wrong"
                 error: "Internal Server Error"
-  /signin:
+  /api/signin:
     post:
       summary: User signin
       requestBody:
