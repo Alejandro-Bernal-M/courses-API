@@ -9,7 +9,7 @@ exports.requireSignin = (req, res, next) => {
   try {
     user = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
-    return res.json({error: error, message: 'Token error'});
+    return res.status(401).json({error: error, message: 'Token error'});
   }
   req.user = user;
   console.log('user',user)

@@ -2,6 +2,9 @@ const Course = require('../models/course');
 const User = require('../models/user');
 
 exports.createCourse = async(req, res) => {
+  console.log('req',req)
+  console.log('file',req.file)
+  console.log('body',req.body)
   const {
     name,
     instructor,
@@ -12,7 +15,8 @@ exports.createCourse = async(req, res) => {
     location,
     prerequisites,
     syllabus,
-    students
+    students,
+    keywords
   } = req.body;
 
   const newCourse = new Course({
@@ -24,9 +28,10 @@ exports.createCourse = async(req, res) => {
     duration,
     schedule,
     location,
-    prerequisites,
-    syllabus,
-    students
+    prerequisites: JSON.parse(prerequisites),
+    syllabus: JSON.parse(syllabus),
+    students,
+    keywords: JSON.parse(keywords)
   });
 
   try {
