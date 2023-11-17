@@ -20,7 +20,7 @@ const upload = multer({storage: storage});
 router.post('/admin/courses/create', requireSignin, adminMiddleware,upload.single('thumbnail'), createCourse);
 router.patch('/courses/:id/enroll/:userId', requireSignin, userMiddleware, enroll);
 router.get('/courses/search', searchCourses);
-router.get('/courses/:id', requireSignin, getSpecificCourse);
+router.get('/courses/:id', getSpecificCourse);
 router.get('/courses', getCourses);
 
 module.exports = router;

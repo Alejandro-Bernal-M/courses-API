@@ -92,6 +92,7 @@ exports.getSpecificCourse = async(req, res) => {
         schedule: foundCourse.schedule,
         location: foundCourse.location,
         prerequisites: foundCourse.prerequisites,
+        syllabus: foundCourse.syllabus,
       }
       return res.json(filteredCourse);
     }else{
